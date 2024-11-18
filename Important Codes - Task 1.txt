@@ -1,0 +1,147 @@
+1. Copy the File to Your Host (core-site.xml)
+	docker cp 9f4b1c8d33b4:/opt/hadoop-3.2.1/etc/hadoop/core-site.xml ./core-site.xml
+
+
+2. Copy the File to Your Host (hdfs-site.xml)
+	docker cp 9f4b1c8d33b4:/opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml ./hdfs-site.xml
+
+
+3. Edit the Files on Your Host Machine (use VS code)
+
+// core-site.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>hdfs://861bf09c51f4:8020</value>
+  </property>
+</configuration>
+		
+
+
+// hdfs-site.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:///hadoop/dfs/name</value>
+  </property>
+  <property>
+    <name>dfs.namenode.rpc-bind-host</name>
+    <value>0.0.0.0</value>
+  </property>
+  <property>
+    <name>dfs.namenode.servicerpc-bind-host</name>
+    <value>0.0.0.0</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-bind-host</name>
+    <value>0.0.0.0</value>
+  </property>
+  <property>
+    <name>dfs.namenode.https-bind-host</name>
+    <value>0.0.0.0</value>
+  </property>
+  <property>
+    <name>dfs.client.use.datanode.hostname</name>
+    <value>true</value>
+  </property>
+  <property>
+    <name>dfs.datanode.use.datanode.hostname</name>
+    <value>true</value>
+  </property>
+</configuration>
+
+
+
+4. Copy the Edited Files Back to the Container (core-site.xml)
+	docker cp ./core-site.xml 9f4b1c8d33b4:/opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+
+
+5. Copy the Edited Files Back to the Container (hdfs-site.xml)
+	docker cp ./hdfs-site.xml 9f4b1c8d33b4:/opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
+
+
+6. Stop HDFS Services
+	docker exec -it 9f4b1c8d33b4 /opt/hadoop-3.2.1/sbin/stop-dfs.sh
+
+7. Start HDFS Services
+	docker exec -it 9f4b1c8d33b4 bash
+
+
+8. Check the core-site.xml File Inside the Container
+	docker exec -it 9f4b1c8d33b4 cat /opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+
+
+9. Check the hdfs-site.xml File Inside the Container
+	docker exec -it 9f4b1c8d33b4 cat /opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
+
+
+10. Edit core-site.xml and hdfs-site.xml
+	
+	********core-site.xml********** 
+<property>
+  <name>dfs.replication</name>
+  <value>2</value> <!-- Change replication factor -->
+</property>
+
+
+	********hdfs-site.xml**********
+<property>
+  <name>dfs.blocksize</name>
+  <value>134217728</value> <!-- Set block size to 128 MB -->
+</property>
+
+
+11. Copy the Edited Files Back to the Container (core-site.xml)
+	docker cp ./core-site.xml 9f4b1c8d33b4:/opt/hadoop-3.2.1/etc/hadoop/core-site.xml
+
+
+	
+12. Copy the Edited Files Back to the Container (hdfs-site.xml)
+	docker cp ./hdfs-site.xml 9f4b1c8d33b4:/opt/hadoop-3.2.1/etc/hadoop/hdfs-site.xml
+
+
+
+13. To run the word count job:
+	hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar wordcount /user/hadoop/input /user/hadoop/output
+
+
+
+14. To display the results of the word count job:
+	hdfs dfs -cat /user/hadoop/output/part-r-00000
+
