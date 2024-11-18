@@ -137,6 +137,8 @@
 
 
 
+
+
 13. To run the word count job:
 	hadoop jar $HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-*.jar wordcount /user/hadoop/input /user/hadoop/output
 
